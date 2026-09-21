@@ -68,5 +68,38 @@ export function togglePlayer(game) {
  
 }
  
+export function isWaiting(game, userid) {
+  // a game is waiting if we are waiting and the player is not the first player already.
+  return game.state == "waiting" && game.player1 != userid
+}
  
- 
+export function joinGame(game, userid) {
+  if (!isWaiting(game, userid)) {
+    throw Error("Not waiting!")
+  }
+  if (game.player1 == undefined) {
+    game.player1 = userid
+  } else {
+    game.player2 = userid
+    game.state = "playing"
+  }
+}
+
+/* Returns the playerid whose turn it is. */
+export function getCurrentPlayer(game) {
+  return game.next == 1 ? game.player1 : game.player2
+}
+
+export function toJson(game, userid) {
+  let copy = structuredClone(game) // make a copy
+  if (game.state == "playing") {
+    if (copy.player1 == userid && copy.next == 1 || copy.player2 == userid && copy.next == 2) {
+      copy["myturn"] = true
+    }
+  } else if (game.state == "won") {
+    if (copy.player1 == userid && copy.next == 1 || copy.player2 == userid && copy.next == 2) {
+      copy["winner"] = true
+    }
+  }
+  return copy
+}
