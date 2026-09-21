@@ -1,0 +1,44 @@
+
+body{
+
+    background-color:bisque;
+
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+t-grid{
+    max-width: 12cm;
+    margin:0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap:1em;
+    padding:1em;
+
+    border-radius: 1cm;
+    background-color:brown;
+}
+
+t-grid button {
+    border: none;
+    border-radius: 15px;
+    background-color:bisque;
+    box-shadow: inset 30px 20px 0 #bbb;
+    aspect-ratio: 1/1;
+    border-radius: 30%;
+}
+button[data-state = "2"]{
+    font-size: xx-large;
+
+}
+button[data-state = "1"]{
+    font-size: xx-large;
+
+}
