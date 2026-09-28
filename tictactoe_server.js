@@ -6,7 +6,7 @@ export function newGame() {
             0,0,0,
             0,0,0,
         ],
-        "state": "playing", // or "tie", "won"
+        "state": "waiting", // or "tie", "won"
         "next": 1, // or 2
    
     }

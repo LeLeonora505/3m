@@ -1,12 +1,14 @@
 // bi de website: http://localhost:3001/0/game
 import express from 'express'
 import cookieParser from 'cookie-parser'
-import { newGame, dropPiece, toJson, isWaiting, joinGame } from './tictactoe_server.js'
+import { newGame, selectPiece, toJson, isWaiting, joinGame, getCurrentPlayer } from './tictactoe_server.js'
  
 const app = express()
+app.use(cookieParser())
  
 /** All games by gameid. */
 let games = {}
+
  
 app.get('/:gameid/game', (req, res) => {
     const gameid = parseInt(req.params['gameid'])
@@ -16,20 +18,14 @@ app.get('/:gameid/game', (req, res) => {
         game = newGame(gameid)
         games[gameid] = game
     }
+    const userid = getUserId(req, res)
+    if (isWaiting(game, userid)) {
+        joinGame(game, userid)
+        console.log(`Game ${gameid} joined by ${userid}`)
+    }
     res.json(game)
 })
  
-app.get('/:gameid/set/:column', (req, res) => {
-    const game = games[parseInt(req.params['gameid'])]
-    if (game == undefined) {
-        // Send error code
-        res.status(404).json("no such game")
-    } else {
-        let column = parseInt(req.params['column'])
-        selectPiece(game, column)
-        res.json(game)
-    }
-})
  
 const port = 3001
  
@@ -39,12 +35,7 @@ const port = 3001
 app.use('/:gameid/', express.static('static'))
  
  
-// Listen on the given port
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
- 
-app.use(cookieParser())
+
  
 /** Retrieve the user's identifier from the cookies, or set a new one. */
 function getUserId(req, res) {
@@ -55,19 +46,13 @@ function getUserId(req, res) {
     }
     return userid
 }
- 
-    const userid = getUserId(req, res)
-    /* join game that is waiting for players. */
-    if (isWaiting(game, userid)) {
-        joinGame(game, userid)
-    }
-    res.json(game)
-
 
 /** Make a play. Only allows the joined players to  */
 app.get('/:gameid/set/:column', (req, res) => {
     const userid = getUserId(req, res)
     const game = games[parseInt(req.params['gameid'])]
+    console.log(`User ${userid} attempting to set ${req.params['column']}`)
+    console.log(`Current player: ${getCurrentPlayer(game)}`)
     if (game == undefined) {
         res.status(404).json("no such game")
     } else if (game.state != "playing") {
@@ -77,7 +62,13 @@ app.get('/:gameid/set/:column', (req, res) => {
         res.json("Not your turn, my friend")
     } else {
         let column = parseInt(req.params['column'])
-        dropPiece(game, column)
+        selectPiece(game, column)
         res.json(toJson(game, userid))
     }
 })
+
+// Listen on the given port
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
+ 
