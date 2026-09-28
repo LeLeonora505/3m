@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "ttt",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,11 +17,6 @@
   },
   "bugs": "",
   "keywords": [],
-  "author": {
-    "name": "",
-    "email": "",
-    "url": ""
-  },
   "contributors": [],
   "scripts": {
     "dev": "",
