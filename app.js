@@ -56,21 +56,13 @@ function getUserId(req, res) {
     return userid
 }
  
-app.get('/:gameid/game', (req, res) => {
-    const gameid = parseInt(req.params['gameid'])
-    let game = games[gameid]
-    if (game == undefined) {
-        // Create a new game if it does not exist.
-        game = newGame(gameid)
-        games[gameid] = game
-    }
     const userid = getUserId(req, res)
     /* join game that is waiting for players. */
     if (isWaiting(game, userid)) {
         joinGame(game, userid)
     }
     res.json(game)
-})
+
 
 /** Make a play. Only allows the joined players to  */
 app.get('/:gameid/set/:column', (req, res) => {
